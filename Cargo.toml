@@ -1,0 +1,15 @@
+[package]
+name = "egui-multiselect"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/frankvgompel/egui-multiselect"
+authors = ["frankvgompel"]
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = "0.23.0"
+egui-notify = "0.10.0"
+egui-phosphor = "0.3.0"
