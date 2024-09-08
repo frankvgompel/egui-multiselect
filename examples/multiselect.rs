@@ -68,7 +68,7 @@ fn main() {
             };
             cc.egui_ctx.set_fonts(font_def);
             cc.egui_ctx.style_mut(|style| style.spacing.item_spacing = egui::vec2(8.0, 5.0));
-            Box::new(ExampleApp::new())
+            Ok(Box::new(ExampleApp::new()))
         }),
     )
     .unwrap();

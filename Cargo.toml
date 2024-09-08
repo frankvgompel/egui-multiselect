@@ -10,6 +10,6 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-eframe = "0.23.0"
-egui-notify = "0.10.0"
-egui-phosphor = "0.3.0"
+eframe = "0.28.1"
+egui-notify = "0.15.0"
+egui-phosphor = "0.6.0"

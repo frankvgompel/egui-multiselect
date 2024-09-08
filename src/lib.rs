@@ -105,7 +105,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget
             ui.memory_mut(|m| m.open_popup(popup_id));
         }
         let mut changed = false;
-        eframe::egui::popup_below_widget(ui, popup_id, &r, |ui| {
+        eframe::egui::popup_below_widget(ui, popup_id, &r, eframe::egui::PopupCloseBehavior::CloseOnClickOutside,|ui| {
             eframe::egui::ScrollArea::vertical().show(ui, |ui| {
                 for (i, var) in items.clone().iter().enumerate() {
                     let text = var.clone();
