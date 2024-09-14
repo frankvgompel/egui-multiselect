@@ -4,8 +4,12 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/frankvgompel/egui-multiselect"
-authors = ["frankvgompel"]
+authors = ["Frank van Gompel"]
 readme = "README.md"
+description = "Multiselect widget for Egui"
+keywords = ["graphics", "egui", "widget", "gui"]
+categories = ["gui", "graphics"]
+exclude = ["examples", "media"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
