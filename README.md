@@ -1,4 +1,4 @@
-# Egui-multiselect
+# egui-multiselect
 
 A multiselect widget for Egui
 

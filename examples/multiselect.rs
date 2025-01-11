@@ -1,8 +1,7 @@
-
-use egui_multiselect::MultiSelect;
 use eframe::egui;
+use egui_multiselect::MultiSelect;
 use egui_notify::Toasts;
-
+use std::sync::Arc;
 
 #[derive(Default)]
 struct ExampleApp {
@@ -48,7 +47,11 @@ impl eframe::App for ExampleApp {
             });
             if self.toasted {
                 let caption = format!("Max: {} selections", &self.max_opt);
-                self.toasts.custom(caption, egui_phosphor::regular::LIGHTBULB.to_owned(), egui::Color32::from_rgba_premultiplied(0, 255, 0, 255));
+                self.toasts.custom(
+                    caption,
+                    egui_phosphor::regular::LIGHTBULB.to_owned(),
+                    egui::Color32::from_rgba_premultiplied(0, 255, 0, 255),
+                );
                 self.toasted = false;
             }
         });
@@ -64,10 +67,13 @@ fn main() {
             let mut font_def = egui::FontDefinitions::default();
             egui_phosphor::add_to_fonts(&mut font_def, egui_phosphor::Variant::Regular);
             for data in font_def.font_data.values_mut() {
-                data.tweak.scale = 1.20;
-            };
+                let font_data = Arc::get_mut(data).unwrap();
+                font_data.tweak.scale = 1.2;
+            }
+
             cc.egui_ctx.set_fonts(font_def);
-            cc.egui_ctx.style_mut(|style| style.spacing.item_spacing = egui::vec2(8.0, 5.0));
+            cc.egui_ctx
+                .style_mut(|style| style.spacing.item_spacing = egui::vec2(8.0, 5.0));
             Ok(Box::new(ExampleApp::new()))
         }),
     )
