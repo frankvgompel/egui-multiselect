@@ -4,8 +4,9 @@
 
 //#![warn(missing_docs)]
 
-use eframe::egui::{Align, Button, Id, Layout, Response, Ui, Vec2, Widget};
+use eframe::egui::{Align, Button, Id, Layout, Response, Ui, Vec2, Widget, Popup};
 use std::hash::Hash;
+use eframe::egui::style::StyleModifier;
 
 /// MultiSelect widget
 
@@ -73,7 +74,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         if ui.selectable_label(true, format!("{item} ｘ")).clicked() {
                             answers.remove(i);
                             items.push(item.clone());
-                            ui.memory_mut(|m| m.open_popup(popup_id))
+                            Popup::open_id(ui.ctx(), popup_id);
                         };
                     }
                 });
@@ -85,32 +86,27 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         for item in options.clone() {
                             items.push(item)
                         }
-                        ui.memory_mut(|m| m.open_popup(popup_id))
+                        Popup::open_id(ui.ctx(), popup_id);
                     };
                     let icon_open = egui_phosphor::regular::FOLDER_OPEN.to_owned();
                     if ui.button(icon_open).clicked() && !items.is_empty() {
-                        ui.memory_mut(|m| m.open_popup(popup_id))
+                        Popup::open_id(ui.ctx(), popup_id);
                     }
                 });
             })
             .response
         };
-        if r.clicked() {
-            ui.memory_mut(|m| m.open_popup(popup_id));
-        }
         let mut changed = false;
-        eframe::egui::popup_below_widget(
-            ui,
-            popup_id,
-            &r,
-            eframe::egui::PopupCloseBehavior::CloseOnClickOutside,
-            |ui| {
+        Popup::menu(&r)
+            .id(popup_id)
+            .style(StyleModifier::default())
+            .close_behavior(eframe::egui::PopupCloseBehavior::CloseOnClickOutside)
+            .show(|ui| {
                 eframe::egui::ScrollArea::vertical().show(ui, |ui| {
                     for (i, var) in items.clone().iter().enumerate() {
                         let text = var.clone();
-
                         if display(ui, &text).clicked() {
-                            if answers.clone().len() != *max_opt as usize {
+                            if answers.len() < *max_opt as usize {
                                 answers.push(text.clone());
                                 items.remove(i);
                                 changed = true;
@@ -120,15 +116,13 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         }
                     }
                 });
-            },
-        );
+            });
+
         if changed {
             r.mark_changed();
-            if !items.is_empty() {
-                ui.memory_mut(|m| m.open_popup(popup_id))
-            }
+            // close when max reached:
             if answers.len() == *max_opt as usize {
-                ui.memory_mut(|m| m.close_popup())
+                Popup::close_id(ui.ctx(), popup_id);
             }
         }
         r
