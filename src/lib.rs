@@ -4,9 +4,9 @@
 
 //#![warn(missing_docs)]
 
-use eframe::egui::{Align, Button, Id, Layout, Response, Ui, Vec2, Widget, Popup};
-use std::hash::Hash;
 use eframe::egui::style::StyleModifier;
+use eframe::egui::{Align, Button, Id, Layout, Popup, Response, Ui, Vec2, Widget};
+use std::hash::Hash;
 
 /// MultiSelect widget
 
