@@ -20,7 +20,7 @@ impl ExampleApp {
                 "First item".into(),
                 "Second thing".into(),
                 "Third choice".into(),
-                "Anther option with longer string".into(),
+                "Another option with longer string".into(),
             ],
             ms_answers: Vec::new(),
             items: Vec::new(),
