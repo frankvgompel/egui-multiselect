@@ -12,7 +12,6 @@ use std::hash::Hash;
 
 pub struct MultiSelect<'a, F: FnMut(&mut Ui, &str) -> Response> {
     popup_id: Id,
-    items: &'a mut Vec<String>,
     answers: &'a mut Vec<String>,
     options: &'a Vec<String>,
     display: F,
@@ -24,7 +23,6 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> MultiSelect<'a, F> {
     /// Creates new MultiSelect box.
     pub fn new(
         id_source: impl Hash,
-        items: &'a mut Vec<String>,
         answers: &'a mut Vec<String>,
         options: &'a Vec<String>,
         display: F,
@@ -33,7 +31,6 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> MultiSelect<'a, F> {
     ) -> Self {
         Self {
             popup_id: Id::new(id_source),
-            items,
             answers,
             options,
             display,
@@ -47,13 +44,14 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
     fn ui(self, ui: &mut Ui) -> Response {
         let Self {
             popup_id,
-            items,
             answers,
             options,
             mut display,
             max_opt,
             toasted,
         } = self;
+
+        let mut items = options.clone();
 
         if items.is_empty() && answers.is_empty() {
             for item in options.clone() {
@@ -73,7 +71,10 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                     for (i, item) in answers.clone().iter().enumerate() {
                         if ui.selectable_label(true, format!("{item} ｘ")).clicked() {
                             answers.remove(i);
+                            answers.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
                             items.push(item.clone());
+                            items.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+
                             Popup::open_id(ui.ctx(), popup_id);
                         };
                     }
@@ -108,7 +109,9 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         if display(ui, &text).clicked() {
                             if answers.len() < *max_opt as usize {
                                 answers.push(text.clone());
+                                answers.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
                                 items.remove(i);
+                                items.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
                                 changed = true;
                             } else {
                                 *toasted = true;

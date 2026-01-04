@@ -17,3 +17,4 @@ exclude = ["examples", "media"]
 eframe = "0.33"
 egui-notify = "0.21"
 egui-phosphor = { git = "https://github.com/ItsEthra/egui-phosphor.git", branch = "egui-0.33", features = ["bold"]}
+#egui-phosphor = "0.10.0"
