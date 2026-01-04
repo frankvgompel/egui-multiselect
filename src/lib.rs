@@ -109,7 +109,8 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         if display(ui, &text).clicked() {
                             if answers.len() < *max_opt as usize {
                                 answers.push(text.clone());
-                                answers.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+                                answers
+                                    .sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
                                 items.remove(i);
                                 items.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
                                 changed = true;
