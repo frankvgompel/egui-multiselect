@@ -9,7 +9,6 @@ use eframe::egui::{Align, Button, Id, Layout, Popup, Response, Ui, Vec2, Widget}
 use std::hash::Hash;
 
 /// MultiSelect widget
-
 pub struct MultiSelect<'a, F: FnMut(&mut Ui, &str) -> Response> {
     popup_id: Id,
     answers: &'a mut Vec<String>,
@@ -71,9 +70,13 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                     for (i, item) in answers.clone().iter().enumerate() {
                         if ui.selectable_label(true, format!("{item} ｘ")).clicked() {
                             answers.remove(i);
-                            answers.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+                            answers.sort_by_key(|s| {
+                                options.iter().position(|x| x == s).unwrap_or_default()
+                            });
                             items.push(item.clone());
-                            items.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+                            items.sort_by_key(|s| {
+                                options.iter().position(|x| x == s).unwrap_or_default()
+                            });
 
                             Popup::open_id(ui.ctx(), popup_id);
                         };
@@ -109,10 +112,13 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                         if display(ui, &text).clicked() {
                             if answers.len() < *max_opt as usize {
                                 answers.push(text.clone());
-                                answers
-                                    .sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+                                answers.sort_by_key(|s| {
+                                    options.iter().position(|x| x == s).unwrap_or_default()
+                                });
                                 items.remove(i);
-                                items.sort_by_key(|s| options.iter().position(|x| x == s).unwrap());
+                                items.sort_by_key(|s| {
+                                    options.iter().position(|x| x == s).unwrap_or_default()
+                                });
                                 changed = true;
                             } else {
                                 *toasted = true;
