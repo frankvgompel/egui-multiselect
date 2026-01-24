@@ -6,6 +6,7 @@ use std::sync::Arc;
 #[derive(Default)]
 struct ExampleApp {
     options: Vec<String>,
+    items: Vec<String>,
     ms_answers: Vec<String>,
     max_opt: u8,
     toasted: bool,
@@ -21,6 +22,7 @@ impl ExampleApp {
                 "Third choice".into(),
                 "Another option with longer string".into(),
             ],
+            items: Vec::new(),
             ms_answers: Vec::new(),
             max_opt: 3,
             toasted: false,
@@ -35,6 +37,7 @@ impl eframe::App for ExampleApp {
             ui.horizontal(|ui| {
                 ui.add(MultiSelect::new(
                     format!("test_multiselect {}", &self.max_opt),
+                    &mut self.items,
                     &mut self.ms_answers,
                     &self.options,
                     |ui, _text| ui.selectable_label(false, _text),

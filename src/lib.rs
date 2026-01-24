@@ -11,6 +11,7 @@ use std::hash::Hash;
 /// MultiSelect widget
 pub struct MultiSelect<'a, F: FnMut(&mut Ui, &str) -> Response> {
     popup_id: Id,
+    items: &'a mut Vec<String>,
     answers: &'a mut Vec<String>,
     options: &'a Vec<String>,
     display: F,
@@ -22,6 +23,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> MultiSelect<'a, F> {
     /// Creates new MultiSelect box.
     pub fn new(
         id_source: impl Hash,
+        items: &'a mut Vec<String>,
         answers: &'a mut Vec<String>,
         options: &'a Vec<String>,
         display: F,
@@ -30,6 +32,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> MultiSelect<'a, F> {
     ) -> Self {
         Self {
             popup_id: Id::new(id_source),
+            items,
             answers,
             options,
             display,
@@ -43,6 +46,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
     fn ui(self, ui: &mut Ui) -> Response {
         let Self {
             popup_id,
+            items,
             answers,
             options,
             mut display,
@@ -50,9 +54,10 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
             toasted,
         } = self;
 
-        let mut items = options.clone();
-        for item in answers.clone() {
-            items.retain(|x| *x != item);
+        if items.is_empty() && answers.is_empty() {
+            for item in options.clone() {
+                items.push(item)
+            }
         }
 
         let mut r = if answers.is_empty() {
@@ -84,7 +89,10 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                     let icon_trash = egui_phosphor::regular::TRASH.to_owned();
                     if ui.button(icon_trash).clicked() {
                         answers.clear();
-                        items = options.clone();
+                        items.clear();
+                        for item in options.clone() {
+                            items.push(item)
+                        }
                         Popup::open_id(ui.ctx(), popup_id);
                     };
                     let icon_open = egui_phosphor::regular::FOLDER_OPEN.to_owned();
