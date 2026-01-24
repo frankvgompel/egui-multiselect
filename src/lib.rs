@@ -51,12 +51,10 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
         } = self;
 
         let mut items = options.clone();
-
-        if items.is_empty() && answers.is_empty() {
-            for item in options.clone() {
-                items.push(item)
-            }
+        for item in answers.clone() {
+            items.retain(|x| *x != item);
         }
+
         let mut r = if answers.is_empty() {
             ui.add(
                 Button::new(format!("Choose max {} options", max_opt))
@@ -86,10 +84,7 @@ impl<'a, F: FnMut(&mut Ui, &str) -> Response> Widget for MultiSelect<'a, F> {
                     let icon_trash = egui_phosphor::regular::TRASH.to_owned();
                     if ui.button(icon_trash).clicked() {
                         answers.clear();
-                        items.clear();
-                        for item in options.clone() {
-                            items.push(item)
-                        }
+                        items = options.clone();
                         Popup::open_id(ui.ctx(), popup_id);
                     };
                     let icon_open = egui_phosphor::regular::FOLDER_OPEN.to_owned();
